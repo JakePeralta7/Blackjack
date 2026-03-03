@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blackjack</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Blackjack</h1>
+    <div class="header-controls">
+      <button id="btn-leaderboard" class="btn-secondary" aria-label="Open leaderboard">🏆 Leaderboard</button>
+      <button id="btn-theme" class="btn-icon" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Deck selector -->
+    <div class="deck-selector" id="deck-selector">
+      <button class="deck-btn active" data-deck="1">1 Deck</button>
+      <button class="deck-btn" data-deck="2">2 Decks</button>
+      <button class="deck-btn" data-deck="6">6 Decks</button>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-label">Chips</span>
+        <span class="stat-value" id="chips">1000</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Bet</span>
+        <span class="stat-value" id="current-bet">0</span>
+      </div>
+      <button class="btn-secondary btn-cashout hidden" id="btn-cashout">Cash Out</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <!-- Dealer area -->
+      <div class="area dealer-area" id="dealer-area">
+        <div class="area-label">Dealer <span class="hand-value" id="dealer-value"></span></div>
+        <div class="cards" id="dealer-cards"></div>
+      </div>
+
+      <!-- Result overlay inside table -->
+      <div class="table-overlay hidden" id="table-overlay">
+        <div class="overlay-content" id="overlay-content"></div>
+        <button class="btn-primary" id="btn-overlay-new">New Hand</button>
+      </div>
+
+      <!-- Player area -->
+      <div class="area player-area" id="player-area">
+        <div class="cards" id="player-cards"></div>
+        <div class="area-label">You <span class="hand-value" id="player-value"></span></div>
+      </div>
+    </div>
+
+    <!-- Betting panel (shown during betting phase) -->
+    <div class="betting-panel" id="betting-panel">
+      <div class="chip-row">
+        <button class="chip-btn" data-amount="10">10</button>
+        <button class="chip-btn" data-amount="25">25</button>
+        <button class="chip-btn" data-amount="50">50</button>
+        <button class="chip-btn" data-amount="100">100</button>
+        <button class="chip-btn" data-amount="500">500</button>
+      </div>
+      <div class="bet-actions">
+        <button class="btn-secondary" id="btn-clear-bet">Clear</button>
+        <button class="btn-primary" id="btn-deal">Deal</button>
+      </div>
+    </div>
+
+    <!-- Action bar (shown during player_turn phase) -->
+    <div class="action-bar hidden" id="action-bar">
+      <button class="btn-primary" id="btn-hit">Hit</button>
+      <button class="btn-secondary" id="btn-stand">Stand</button>
+      <button class="btn-secondary" id="btn-double">Double</button>
+      <button class="btn-secondary" id="btn-split">Split</button>
+    </div>
+  </main>
+
+  <!-- ── Leaderboard modal ───────────────────────────────────── -->
+  <div class="modal hidden" id="modal-leaderboard" role="dialog" aria-modal="true" aria-labelledby="modal-lb-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-lb-title">🏆 Leaderboard</h2>
+        <button class="btn-icon modal-close" id="btn-close-leaderboard" aria-label="Close">✕</button>
+      </div>
+      <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" role="tab" data-deck="1">1 Deck</button>
+        <button class="tab-btn" role="tab" data-deck="2">2 Decks</button>
+        <button class="tab-btn" role="tab" data-deck="6">6 Decks</button>
+      </div>
+      <div id="leaderboard-content" class="leaderboard-content">
+        <p class="loading">Loading…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Score submit modal ─────────────────────────────────── -->
+  <div class="modal hidden" id="modal-score" role="dialog" aria-modal="true" aria-labelledby="score-modal-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="score-modal-title">Cash Out</h2>
+      </div>
+      <p id="cashout-summary"></p>
+      <form id="score-form" class="score-form" autocomplete="off">
+        <label for="player-name">Your name</label>
+        <input type="text" id="player-name" maxlength="32" placeholder="Enter your name" />
+        <div class="score-form-actions">
+          <button type="submit" class="btn-primary">Submit Score</button>
+          <button type="button" class="btn-secondary" id="btn-skip-score">Play Again</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared backdrop -->
+  <div class="modal-backdrop hidden" id="modal-backdrop"></div>
+
+  <script src="game.js"></script>
+</body>
+</html>
