@@ -257,8 +257,8 @@ function showResultOverlay() {
     elOverlayContent.appendChild(chipsEl);
   }
 
-  // Show "New Hand" or "Cash Out" depending on chips
-  elBtnOverlayNew.textContent = state.chips > 0 ? 'New Hand' : 'Game Over';
+  // Show "New Hand" or "New Game" depending on chips
+  elBtnOverlayNew.textContent = state.chips > 0 ? 'New Hand' : 'New Game';
   elBtnOverlayNew.disabled = false;
 
   elTableOverlay.classList.remove('hidden');
@@ -577,10 +577,16 @@ elBtnStand.addEventListener('click',  () => sendAction('stand'));
 elBtnDouble.addEventListener('click', () => sendAction('double'));
 elBtnSplit.addEventListener('click',  () => sendAction('split'));
 
-elBtnOverlayNew.addEventListener('click', () => {
+elBtnOverlayNew.addEventListener('click', async () => {
   if (state.chips <= 0) {
     elTableOverlay.classList.add('hidden');
-    openScoreModal();
+    // Lost everything — delete session without saving a score
+    if (state.sessionId) {
+      fetch(`/api/session/${state.sessionId}`, { method: 'DELETE' }).catch(() => {});
+    }
+    clearSavedSession();
+    state.sessionId = null;
+    await startNewSession(state.deckCount);
   } else {
     newHand();
   }
@@ -596,14 +602,9 @@ elScoreForm.addEventListener('submit', async (e) => {
 });
 
 elBtnSkipScore.addEventListener('click', async () => {
-  // Don't save score — just end session and start fresh
+  // Don't save score — just delete the session and start fresh
   if (state.sessionId) {
-    // Fire-and-forget: best effort delete (no score saved)
-    fetch('/api/cashout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: state.sessionId, player_name: '__skip__' }),
-    }).catch(() => {});
+    fetch(`/api/session/${state.sessionId}`, { method: 'DELETE' }).catch(() => {});
   }
   clearSavedSession();
   state.sessionId = null;

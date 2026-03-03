@@ -322,6 +322,16 @@ app.post('/api/hand/new', (req, res) => {
   res.json(clientState({ ...session, state }));
 });
 
+// ─── DELETE /api/session/:id ────────────────────────────────────────────────────
+
+/** Discard a session without saving a score (e.g. bust-out / play again). */
+app.delete('/api/session/:id', (req, res) => {
+  const session = db.getSession(req.params.id);
+  if (!session) return res.status(404).json({ error: 'Session not found' });
+  db.deleteSession(req.params.id);
+  res.status(204).end();
+});
+
 // ─── POST /api/cashout ────────────────────────────────────────────────────────
 
 app.post('/api/cashout', (req, res) => {
