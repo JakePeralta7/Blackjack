@@ -6,8 +6,10 @@ WORKDIR /build
 # Required to compile better-sqlite3 native addon
 RUN apk add --no-cache python3 make g++
 
+COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+WORKDIR /build/backend
 COPY backend/package.json ./
-RUN corepack enable && pnpm install --prod
+RUN corepack enable && pnpm install --prod --frozen-lockfile
 
 # ── Stage 2: runtime ──────────────────────────────────────────────────────────
 FROM node:22-alpine
@@ -17,15 +19,20 @@ RUN apk add --no-cache tini
 
 WORKDIR /app
 
-# Copy production node_modules from deps stage
-COPY --from=deps /build/node_modules ./backend/node_modules
-
 # Copy application source
 COPY backend/ ./backend/
 COPY frontend/ ./frontend/
 
+# Copy pnpm virtual store used by backend/node_modules symlinks
+COPY --from=deps /build/node_modules ./node_modules
+
+# Copy production node_modules from deps stage
+COPY --from=deps /build/backend/node_modules ./backend/node_modules
+
 # Create data directory for SQLite volume mount
 RUN mkdir -p /data
+
+ENV DB_PATH=/data/blackjack.db
 
 # Non-root user
 RUN addgroup -S blackjack && adduser -S blackjack -G blackjack \
