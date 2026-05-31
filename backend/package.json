@@ -1,10 +1,12 @@
 {
   "name": "blackjack-backend",
   "version": "1.0.0",
+  "packageManager": "pnpm@11.0.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "test": "node --test"
   },
   "dependencies": {
     "better-sqlite3": "^9.4.3",
