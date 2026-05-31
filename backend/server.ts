@@ -21,7 +21,7 @@ const STARTING_CHIPS = 1000;
 const VALID_DECK_COUNTS = [1, 2, 6];
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend')));
 
 // ─── Validation helpers ───────────────────────────────────────────────────────
 
