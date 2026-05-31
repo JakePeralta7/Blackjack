@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use strict';
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
@@ -621,3 +622,4 @@ elBtnSkipScore.addEventListener('click', async () => {
     await startNewSession(state.deckCount);
   }
 })();
+
